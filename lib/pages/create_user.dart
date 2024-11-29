@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:aula_flutter_full08/components/my_button.dart';
 import 'package:aula_flutter_full08/components/my_input.dart';
 import 'package:aula_flutter_full08/models/user.dart';
@@ -14,7 +15,6 @@ class CreateUserPage extends StatefulWidget {
 }
 
 class _CreateUserPageState extends State<CreateUserPage> {
-
   String _name = '';
   String _username = '';
   String _password = '';
@@ -47,9 +47,8 @@ class _CreateUserPageState extends State<CreateUserPage> {
         Util.alert(context, 'Usuário já existe!');
       }
     }).catchError((error) {
-      Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => const LoginPage())
-      );
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => const LoginPage()));
     });
   }
 
@@ -59,22 +58,16 @@ class _CreateUserPageState extends State<CreateUserPage> {
       appBar: AppBar(title: const Text('Novo Usuário')),
       body: Column(
         children: [
+          MyInput(label: 'Nome', change: (String value) => _name = value),
+          MyInput(label: 'Login', change: (String value) => _username = value),
           MyInput(
-            label: 'Nome',
-            change: (String value) => _name = value
-          ),
+              label: 'Senha',
+              obscureText: true,
+              change: (String value) => _password = value),
           MyInput(
-            label: 'Login',
-            change: (String value) => _username = value
-          ),
-          MyInput(
-            label: 'Senha', obscureText: true,
-            change: (String value) => _password = value
-          ),
-          MyInput(
-            label: 'Confirmar Senha', obscureText: true,
-            change: (String value) => _confirmPass = value
-          ),
+              label: 'Confirmar Senha',
+              obscureText: true,
+              change: (String value) => _confirmPass = value),
           MyButton(text: 'Salvar', onPress: save)
         ],
       ),
