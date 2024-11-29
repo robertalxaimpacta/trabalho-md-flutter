@@ -1,6 +1,7 @@
 import 'package:aula_flutter_full08/models/user.dart';
 import 'package:aula_flutter_full08/pages/create_user.dart';
 import 'package:aula_flutter_full08/pages/login.dart';
+import 'package:aula_flutter_full08/pages/roles.dart';
 import 'package:aula_flutter_full08/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:aula_flutter_full08/util.dart';
@@ -27,6 +28,11 @@ class _HomePageState extends State<HomePage> {
         MaterialPageRoute(builder: (context) => const CreateUserPage()));
   }
 
+  void goToRoles(context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const RolesPage()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +42,10 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             icon: const Icon(Icons.person_add),
             onPressed: () => goToCreateUser(context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.assignment),
+            onPressed: () => goToRoles(context),
           )
         ],
       ),
