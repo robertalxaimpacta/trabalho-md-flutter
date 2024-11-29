@@ -5,7 +5,7 @@ import 'package:aula_flutter_full08/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 
 class _UserService {
-  final String _baseUrl = 'http://192.168.15.58:3030/users';
+  final String _baseUrl = 'http://10.0.2.2:3030/users';
 
   Map<String, String> _getHeaders() {
     User? session = authService.getSession();
@@ -43,6 +43,19 @@ class _UserService {
       throw Exception('Sessão expirada!');
     }
 
+    return false;
+  }
+
+  Future<bool> update(User user) async {
+    final response = await http.put(
+      Uri.parse('$_baseUrl/${user.id}'),
+      headers: _getHeaders(),
+      body: jsonEncode(user.toObject()),
+    );
+
+    if (response.statusCode == 200) {
+      return (true);
+    }
     return false;
   }
 

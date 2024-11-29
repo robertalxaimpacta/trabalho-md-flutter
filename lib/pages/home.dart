@@ -1,5 +1,6 @@
 import 'package:aula_flutter_full08/models/user.dart';
 import 'package:aula_flutter_full08/pages/create_user.dart';
+import 'package:aula_flutter_full08/pages/edit_user.dart';
 import 'package:aula_flutter_full08/pages/login.dart';
 import 'package:aula_flutter_full08/pages/roles.dart';
 import 'package:aula_flutter_full08/services/user_service.dart';
@@ -33,6 +34,20 @@ class _HomePageState extends State<HomePage> {
         context, MaterialPageRoute(builder: (context) => const RolesPage()));
   }
 
+  void goToEditUser(context, User user) async {
+    final updatedUser = await  Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EditUserPage(
+                  user: user,
+                )));
+    if (updatedUser != null) {
+      setState(() {
+        fetchUsers(context);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,39 +79,44 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  ListView _buildListUsers(List<User> users) {
-    return ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          User user = users[index];
+ListView _buildListUsers(List<User> users) {
+  return ListView.builder(
+    itemCount: users.length,
+    itemBuilder: (context, index) {
+      User user = users[index];
 
-          return Dismissible(
-              background: Container(
-                color: Colors.red,
-              ),
-              key: UniqueKey(),
-              child: ListTile(
-                title: Text(user.name),
-                subtitle: Text(user.username),
-              ),
-              onDismissed: (DismissDirection direction) {
-                setState(() {
-                  userService.delete(users[index]).then((wasRemoved) {
-                    if (wasRemoved) {
-                      setState(() {});
-                    } else {
-                      Util.alert(
-                          context, 'Não foi possível remover o usuário!');
-                    }
-                  }).catchError((error) {
-                    print(error);
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginPage()));
-                  });
-                });
-              });
-        });
-  }
+      return Dismissible(
+        background: Container(
+          color: Colors.red,
+        ),
+        key: UniqueKey(),
+        child: ListTile(
+          title: Text(user.name),
+          subtitle: Text(user.username),
+          trailing: IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () => goToEditUser(context, user),
+          ),
+        ),
+        onDismissed: (DismissDirection direction) {
+          setState(() {
+            userService.delete(users[index]).then((wasRemoved) {
+              if (wasRemoved) {
+                setState(() {});
+              } else {
+                Util.alert(context, 'Não foi possível remover o usuário!');
+              }
+            }).catchError((error) {
+              print(error);
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoginPage()));
+            });
+          });
+        },
+      );
+    },
+  );
+}
 }
