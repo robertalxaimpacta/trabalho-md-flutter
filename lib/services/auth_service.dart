@@ -8,7 +8,7 @@ import 'package:localstorage/localstorage.dart';
 
 class _AuthService {
 
-  final String _baseUrl = 'http://192.168.15.58:3030/auth/login';
+  final String _baseUrl = 'http://192.168.100.155:3030/auth/login';
   final String _sessionKey = 'auth@SESSION_KEY';
 
   User? getSession() {

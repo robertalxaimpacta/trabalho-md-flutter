@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:aula_flutter_full08/components/my_button.dart';
+import 'package:aula_flutter_full08/models/role.dart';
+import 'package:aula_flutter_full08/services/role_service.dart';
 import 'package:aula_flutter_full08/components/my_input.dart';
 import 'package:aula_flutter_full08/models/user.dart';
 import 'package:aula_flutter_full08/pages/login.dart';
@@ -19,6 +21,37 @@ class _CreateUserPageState extends State<CreateUserPage> {
   String _username = '';
   String _password = '';
   String _confirmPass = '';
+  List<String> _selectedRoles = [];
+  List<Role> _roles = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRoles();
+  }
+
+  Future<void> _loadRoles() async {
+    try {
+      final rolesList = await getListRoles(context); // Busca os papéis
+      setState(() {
+        _roles = rolesList;
+        _isLoading = false;
+      });
+    } catch (e) {
+      log('Erro ao carregar roles: $e');
+      Navigator.pop(context); // Retorna caso haja um erro
+    }
+  }
+  
+  Future<List<Role>> getListRoles(BuildContext context) async {
+    try {
+      return await roleService.getList();
+    } catch (error) {
+      Navigator.pop(context);
+    }
+    return [];
+  }
 
   void save() {
     if (_name.trim() == '') {
@@ -37,8 +70,12 @@ class _CreateUserPageState extends State<CreateUserPage> {
       Util.alert(context, 'Senha não confere!');
       return;
     }
+    if (_selectedRoles.isEmpty) {
+      Util.alert(context, 'Selecione uma role!');
+      return;
+    }
 
-    final User user = User(null, _name, _username, _password);
+    final User user = User(null, _name, _username, _password, _selectedRoles);
     
     userService.create(user).then((isSaved) {
       if (isSaved) {
@@ -68,6 +105,36 @@ class _CreateUserPageState extends State<CreateUserPage> {
               label: 'Confirmar Senha',
               obscureText: true,
               change: (String value) => _confirmPass = value),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Selecione as Roles:',
+                  style: TextStyle(fontSize: 16),
+                ),
+                Wrap(
+                  spacing: 8.0,
+                  children: _roles.map((role) {
+                    return FilterChip(
+                      label: Text(role.name),
+                      selected: _selectedRoles.contains(role.name),
+                      onSelected: (bool selected) {
+                        setState(() {
+                          if (selected) {
+                            _selectedRoles.add(role.name);
+                          } else {
+                            _selectedRoles.remove(role.name);
+                          }
+                        });
+                      },
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ),
           MyButton(text: 'Salvar', onPress: save)
         ],
       ),

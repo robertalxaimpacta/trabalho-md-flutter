@@ -47,7 +47,7 @@ class _CreateRolePageState extends State<CreateRolePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Novo Role')),
+      appBar: AppBar(title: const Text('Nova Role')),
       body: Column(
         children: [
           MyInput(label: 'Nome', change: (String value) => _name = value),

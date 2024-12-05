@@ -6,7 +6,7 @@ import 'package:aula_flutter_full08/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 
 class _RoleService {
-  final String _baseUrl = 'http://192.168.15.58:3030/roles';
+  final String _baseUrl = 'http://192.168.100.155:3030/roles';
 
   Map<String, String> _getHeaders() {
     User? session = authService.getSession();

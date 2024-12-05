@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:aula_flutter_full08/models/user.dart';
 import 'package:aula_flutter_full08/services/auth_service.dart';
@@ -25,6 +26,7 @@ class _UserService {
     if (response.statusCode == 200) {
       List<dynamic> list = List.from(jsonDecode(response.body));
       List<User> users = list.map((e) => User.fromObject(e)).toList();
+
       return users;
     }
 
